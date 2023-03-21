@@ -2,25 +2,28 @@ import sys
 import requests
 import json
 
-if len(sys.argv) != 2:
-    print("Defnydd:\n\t", sys.argv[0], "[cais.xml]")
-    sys.exit()
-
 overpass_url = "http://overpass-api.de/api/interpreter"
 
-try:
-    ff = open(sys.argv[1], "r")
-except:
-    print("Gwall wrth agor ffeil ", sys.argv[1], ":\t", sys.exc_info()[0])
-    raise
-    sys.exit()
+eitemau = ["place=city", "place=town", "place=village", "designation=community", "natural=peak", "waterway=river"]
+enwau = ["name", "name:cy", "wikidata"]
 
-overpass_query = ff.read()
+print("eitem,enw,count,count:nodes,count:ways,count:relations")
 
-response = requests.get(overpass_url, 
-                        params={'data': overpass_query})
+for eitem in eitemau:
+	for enw in enwau:
+		overpass_query = '[out:csv(::count, ::"count:nodes", ::"count:ways", ::"count:relations"; false; ",")][timeout:90];' \
+		'area[name="Cymru / Wales"][boundary=administrative]->.searchArea;' \
+		'(' \
+		'node[{eitem}]["{enw}"](area.searchArea);' \
+		'way[{eitem}]["{enw}"](area.searchArea);' \
+		'relation[{eitem}]["{enw}"](area.searchArea);' \
+		');' \
+		'out count;'.format(eitem=eitem,enw=enw)
 
-response.encoding = 'utf-8'
-allbwn = response.text
-#print(allbwn.encode('utf-8'))
-print(allbwn)
+		#print(overpass_query)
+		
+		response = requests.get(overpass_url, params={'data': overpass_query})
+
+		response.encoding = 'utf-8'
+		allbwn = response.text.replace('\n\n', '')
+		print(eitem + "," + enw + "," + allbwn)
