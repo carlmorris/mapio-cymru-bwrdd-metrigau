@@ -1,6 +1,7 @@
 import sys
 import requests
 import json
+import time
 
 overpass_url = "http://overpass-api.de/api/interpreter"
 
@@ -11,7 +12,7 @@ print("eitem,enw,count,count:nodes,count:ways,count:relations")
 
 for eitem in eitemau:
 	for enw in enwau:
-		overpass_query = '[out:csv(::count, ::"count:nodes", ::"count:ways", ::"count:relations"; false; ",")][timeout:30];' \
+		overpass_query = '[out:csv(::count, ::"count:nodes", ::"count:ways", ::"count:relations"; false; ",")][timeout:90];' \
 		'area[name="Cymru / Wales"][boundary=administrative]->.searchArea;' \
 		'(' \
 		'node[{eitem}]["{enw}"](area.searchArea);' \
@@ -27,3 +28,5 @@ for eitem in eitemau:
 		response.encoding = 'utf-8'
 		allbwn = response.text.replace('\n', '')
 		print(eitem + "," + enw + "," + allbwn)
+
+		time.sleep(30)
