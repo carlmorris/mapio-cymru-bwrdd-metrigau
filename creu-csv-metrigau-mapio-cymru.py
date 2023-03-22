@@ -22,11 +22,18 @@ for eitem in eitemau:
 		'out count;'.format(eitem=eitem,enw=enw)
 
 		#print(overpass_query)
-		
-		response = requests.get(overpass_url, params={'data': overpass_query})
 
-		response.encoding = 'utf-8'
+		codymateb = 0
+		ceisiadau = 0
+		while(codymateb != 200):
+			response = requests.get(overpass_url, params={'data': overpass_query})
+			codymateb = response.status_code
+			response.encoding = 'utf-8'
+			time.sleep(30)
+			ceisiadau += 1
+			if(ceisiadau > 3):
+				print("\nMae gwall API ar hyn o bryd - yn anffodus. Y cod yw: " . codymateb)
+				quit()
+			
 		allbwn = response.text.replace('\n', '')
 		print(eitem + "," + enw + "," + allbwn)
-
-		time.sleep(30)
