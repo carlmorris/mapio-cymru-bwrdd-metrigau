@@ -5,7 +5,7 @@ import time
 
 overpass_url = "http://overpass-api.de/api/interpreter"
 
-eitemau = ["place=city", "place=town", "place=village", "designation=community", "natural=peak", "waterway=river"]
+eitemau = ["place=city", "place=town", "place=village", "designation=community", "natural", "waterway", "highway", "amenity", "building=yes"]
 enwau = ["name", "name:cy", "wikidata"]
 
 print("eitem,enw,count,count:nodes,count:ways,count:relations")
